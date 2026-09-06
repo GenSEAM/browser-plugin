@@ -2,4 +2,5 @@
  :version "0.1.0"
  :entry "src/plugin.asl"
  :description "Browser WebExtension copilot with in-tab WASI runner and AXTree perception"
+ :asl-first true
  :dependencies [])
