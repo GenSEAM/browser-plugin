@@ -1,0 +1,68 @@
+(:grammar
+  :package @genseam/asl-browser-plugin
+  :version "0.1.0"
+  :tokens-baseline 1
+  :symbols [
+    (:sym :name "BrowserTab" :kind :type :tokens 1)
+    (:sym :name "TabQuery" :kind :type :tokens 1)
+    (:sym :name "BrowserAction" :kind :type :tokens 1)
+    (:sym :name "InferenceRoute" :kind :type :tokens 1)
+    (:sym :name "InferenceTarget" :kind :type :tokens 1)
+    (:sym :name "MeshNodeInfo" :kind :type :tokens 1)
+    (:sym :name "MeshCommandPacket" :kind :type :tokens 1)
+    (:sym :name "BrowserAgentState" :kind :type :tokens 1)
+
+    (:sym :name "evaluate-confidence" :kind :fn :tokens 2
+          :rationale "Checks if local model confidence meets acceptance threshold")
+    (:sym :name "start-plugin" :kind :fn :tokens 2
+          :rationale "Entrypoint starting browser extension agent service worker")
+    (:sym :name "run-tests" :kind :fn :tokens 2
+          :rationale "Standard test suite runner entrypoint")
+    (:sym :name "render-popup" :kind :fn :tokens 2
+          :rationale "Renders HTML VDOM for extension popup")
+    (:sym :name "view-model" :kind :fn :tokens 2
+          :rationale "Constructs reactive state model for popup")
+
+    (:sym :name "list-active-tabs" :kind :fn :tokens 3
+          :rationale "Filters open browser tabs returning only active tabs in current window")
+    (:sym :name "extract-tab-context" :kind :fn :tokens 3
+          :rationale "Extracts compact semantic context from tab metadata and DOM preview")
+    (:sym :name "crawl-domain-tree" :kind :fn :tokens 3
+          :rationale "Generates in-session link crawling plan within the same web origin")
+    (:sym :name "filter-tabs-by-query" :kind :fn :tokens 4
+          :rationale "Filters browser tabs by URL pattern, title keywords, and active status")
+    (:sym :name "make-browser-tab" :kind :fn :tokens 3
+          :rationale "Constructs typed BrowserTab record with window and audio status")
+    (:sym :name "classify-action-tier" :kind :fn :tokens 3
+          :rationale "Classifies browser commands into safe, guarded, or dangerous tiers")
+    (:sym :name "validate-browser-action" :kind :fn :tokens 3
+          :rationale "Validates whether action meets safety constraints and allowed domains")
+    (:sym :name "is-action-permitted?" :kind :fn :tokens 3
+          :rationale "Evaluates execution safety discipline and user confirmation status")
+    (:sym :name "make-browser-action" :kind :fn :tokens 3
+          :rationale "Constructs typed BrowserAction record bound to safety tier and target tab")
+    (:sym :name "select-inference-route" :kind :fn :tokens 3
+          :rationale "Routes perception tasks between local WebGPU SLM and remote gateway proxy")
+    (:sym :name "dispatch-local-perception" :kind :fn :tokens 3
+          :rationale "Executes in-browser lightweight perception returning compact structured result")
+    (:sym :name "format-node-registration" :kind :fn :tokens 3
+          :rationale "Builds Swarm Mesh peer node registration packet for browser agent")
+    (:sym :name "format-mesh-response" :kind :fn :tokens 3
+          :rationale "Encodes structured ASN frame response to remote Swarm Mesh caller")
+    (:sym :name "parse-mesh-command" :kind :fn :tokens 3
+          :rationale "Parses incoming remote command packet from peer Swarm Mesh nodes")
+    (:sym :name "compile-probe-js" :kind :fn :tokens 3
+          :rationale "Synthesizes atomic self-executing JS probe for DOM attribute extraction")
+    (:sym :name "compile-table-extractor" :kind :fn :tokens 3
+          :rationale "Compiles structured table extraction probe returning matrix JSON")
+    (:sym :name "compile-text-selector" :kind :fn :tokens 3
+          :rationale "Compiles text content extraction probe with whitespace normalization")
+    (:sym :name "make-browser-agent" :kind :fn :tokens 3
+          :rationale "Constructs Sovereign Agent state bound to unique identifier and role")
+    (:sym :name "handle-agent-tick" :kind :fn :tokens 3
+          :rationale "Advances agent execution loop state by processing incoming event count")
+    (:sym :name "execute-agent-action" :kind :fn :tokens 3
+          :rationale "Dispatches browser action after evaluating safety policy allowlists")
+    (:sym :name "get-plugin-version" :kind :fn :tokens 3
+          :rationale "Returns active browser extension plugin semantic version string")
+  ])
