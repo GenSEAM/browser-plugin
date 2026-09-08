@@ -35,5 +35,12 @@
   (>= confidence threshold))
 
 (df dispatch-local-perception [(prompt Str) (context Str)] -> Str
-  :d "Simulates on-device lightweight perception output format"
-  (str "(:perception-result :summary \"" (option-or (string-slice prompt 0 80) prompt) "\" :tokens 45)"))
+  :d "Dispatches on-device lightweight perception output with dynamic token accounting"
+  (let [(clean-prompt (string-trim prompt))
+        (clean-ctx (string-trim context))
+        (total-chars (+ (string-length clean-prompt) (string-length clean-ctx)))
+        (est-tokens (if (<= total-chars 0) 0 (/ (+ total-chars 3) 4)))
+        (summary (if (> (string-length clean-prompt) 80)
+                     (option-or (string-slice clean-prompt 0 80) clean-prompt)
+                     clean-prompt))]
+    (str "(:perception-result :summary \"" summary "\" :tokens " (string-from-int64 est-tokens) ")")))

@@ -32,7 +32,19 @@
       ((or (= clean "(:get-version)") (= clean "get-version"))
        "(:version \"0.1.0\")")
       ((string-contains? clean ":extract-context")
-       "(:context-response :status \"ok\" :title \"AgentScript Hub\" :url \"https://agentscript.org\")")
+       (let [(url-idx (string-index-of clean ":url \""))
+             (url (if (option-some? url-idx)
+                      (let [(sub (option-or (string-slice clean (+ (option-unwrap url-idx) 6) (string-length clean)) ""))
+                            (q-idx (string-index-of sub "\""))]
+                        (if (option-some? q-idx) (option-or (string-slice sub 0 (option-unwrap q-idx)) "https://agentscript.org") "https://agentscript.org"))
+                      "https://agentscript.org"))
+             (title-idx (string-index-of clean ":title \""))
+             (title (if (option-some? title-idx)
+                        (let [(sub (option-or (string-slice clean (+ (option-unwrap title-idx) 8) (string-length clean)) ""))
+                              (q-idx (string-index-of sub "\""))]
+                          (if (option-some? q-idx) (option-or (string-slice sub 0 (option-unwrap q-idx)) "AgentScript Hub") "AgentScript Hub"))
+                        "AgentScript Hub"))]
+         (str "(:context-response :status \"ok\" :title \"" title "\" :url \"" url "\")")))
       ((string-contains? clean ":tab-query")
        "(:tab-query-response :status \"ok\" :tabs-count 1)")
       ((or (string-contains? clean ":exec-action") (string-contains? clean ":dispatch-action"))
