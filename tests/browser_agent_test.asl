@@ -6,6 +6,8 @@
       test-mesh-client
       test-dom-compiler
       test-agent-lifecycle
+      test-content-script
+      test-background-worker
       run-tests]
   :i [(runtime :a rt)
       (safety-gate :a sg)
@@ -13,7 +15,9 @@
       (mesh-client :a mc)
       (dom-compiler :a dc)
       (tool_plane :a tp)
-      (plugin :a pl)])
+      (plugin :a pl)
+      (content :a cnt)
+      (background :a bg)])
 
 (df test-tab-manager [] -> Bool
   :d "Verifies tab enumeration, active tab filtering, and query matching"
@@ -111,6 +115,33 @@
     (assert (string-contains? (pl/start-plugin) "initialized") "start plugin mismatch")
     true))
 
+(df test-content-script [] -> Bool
+  :d "Verifies DOM perception context extraction and action validation in content script"
+  (let [(ctx (cnt/extract-page-context "https://agentscript.org" "AgentScript Hub" "<h1>Welcome</h1>"))]
+    (assert (string-contains? ctx "(:ax-tree") "context should contain ax-tree frame")
+    (assert (string-contains? ctx "https://agentscript.org") "context should contain url")
+    (assert (string-contains? ctx ":secure true") "context should have secure flag true")
+    (assert (= (cnt/dispatch-action "click" "#submit") true) "valid click action should succeed")
+    (assert (= (cnt/dispatch-action "fill" "input#query") true) "valid fill action should succeed")
+    (assert (= (cnt/dispatch-action "unknown-action" "#submit") false) "unsupported action should fail")
+    (assert (= (cnt/dispatch-action "click" "") false) "empty selector should fail")
+    true))
+
+(df test-background-worker [] -> Bool
+  :d "Verifies service worker initialization and typed message routing in background script"
+  (let [(sw-init (bg/init-service-worker))
+        (ping-resp (bg/handle-message "(:ping)"))
+        (ver-resp (bg/handle-message "(:get-version)"))
+        (act-resp (bg/handle-message "(:exec-action :action \"click\" :selector \"#submit\")"))
+        (query-resp (bg/handle-message "(:tab-query :target \"all\")"))]
+    (assert (string-contains? sw-init ":service-worker") "service worker init should return service worker frame")
+    (assert (string-contains? sw-init ":state \"active\"") "service worker state should be active")
+    (assert (= ping-resp "(:pong)") "ping message should return pong")
+    (assert (= ver-resp "(:version \"0.1.0\")") "get-version should return version frame")
+    (assert (string-contains? act-resp ":status \"dispatched\"") "exec-action message should succeed")
+    (assert (string-contains? query-resp ":tab-query-response") "tab-query message should return response")
+    true))
+
 (df run-tests [] -> Bool
   :d "Executes all browser agent test cases"
   (and (test-tab-manager)
@@ -118,4 +149,6 @@
        (test-local-inference-routing)
        (test-mesh-client)
        (test-dom-compiler)
-       (test-agent-lifecycle)))
+       (test-agent-lifecycle)
+       (test-content-script)
+       (test-background-worker)))
