@@ -1,12 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "ASL Agent Browser Plugin",
-  "version": "0.1.0",
-  "description": "Cross-browser runtime for Autonomous AI Agents: In-Memory WASI sandbox, DOM extraction, and SearXNG metasearch",
+  "name": "Aslany Browser Plugin",
+  "version": "1.0.0",
+  "description": "Cross-browser autonomous voice agent runtime for Aslany: AudioWorklet 16kHz, In-Memory WebGPU sandbox, AXTree DOM compactor, and CDP bridge",
   "permissions": [
     "activeTab",
     "storage",
-    "scripting"
+    "scripting",
+    "debugger",
+    "offscreen"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -17,7 +19,7 @@
   },
   "action": {
     "default_popup": "src/popup.html",
-    "default_title": "ASL Agent Studio"
+    "default_title": "Aslany Studio"
   },
   "content_scripts": [
     {

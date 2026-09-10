@@ -1,6 +1,6 @@
 (:package asl-browser-plugin
- :version "0.1.0"
+ :version "1.0.0"
  :entry "src/plugin.asl"
- :description "Browser WebExtension copilot with in-tab WASI runner and AXTree perception"
+ :description "Aslany Browser Plugin: Voice-In Action-Out, In-Tab WebGPU, AudioWorklet 16kHz & AXTree Perception"
  :asl-first true
  :dependencies [])
