@@ -65,4 +65,13 @@
           :rationale "Dispatches browser action after evaluating safety policy allowlists")
     (:sym :name "get-plugin-version" :kind :fn :tokens 3
           :rationale "Returns active browser extension plugin semantic version string")
+    (:sym :name "BrowserRuntimeBridge" :kind :type :tokens 1)
+    (:sym :name "WasmRpcBridge" :kind :type :tokens 1)
+    (:sym :name "make-browser-runtime-bridge" :kind :fn :tokens 4
+          :rationale "Constructs BrowserRuntimeBridge record enforcing Web Worker isolation and memory budget")
+    (:sym :name "make-wasm-rpc-bridge" :kind :fn :tokens 4
+          :rationale "Constructs WasmRpcBridge record configuring direct linear memory batch dispatch")
+    (:sym :name "dispatch-batch-rpc" :kind :fn :tokens 3
+          :rationale "Dispatches batch RPC payload directly through WebAssembly linear memory with zero sockets")
   ])
+

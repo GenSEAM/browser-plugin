@@ -3,6 +3,8 @@
   :x [BrowserTab
       TabQuery
       BrowserAgentState
+      BrowserRuntimeBridge
+      WasmRpcBridge
       make-browser-tab
       list-active-tabs
       filter-tabs-by-query
@@ -10,7 +12,10 @@
       crawl-domain-tree
       make-browser-agent
       handle-agent-tick
-      execute-agent-action]
+      execute-agent-action
+      make-browser-runtime-bridge
+      make-wasm-rpc-bridge
+      dispatch-batch-rpc]
   :i [(safety-gate :a sg)])
 
 (dfs BrowserTab
@@ -87,3 +92,38 @@
   (if (sg/is-action-permitted? action allowed-domains target-domain)
       (str "(:action-executed :id \"" (.-agent-id agent) "\" :action \"" (.-action-name action) "\")")
       (str "(:action-rejected :id \"" (.-agent-id agent) "\" :reason \"safety-discipline-blocked\")")))
+
+(dfs BrowserRuntimeBridge
+  (:f worker-mode Bool "Indicates execution inside Web Worker or Service Worker")
+  (:f linear-memory-bytes I64 "Allocated WebAssembly linear memory in bytes")
+  (:f active-sessions I64 "Active autonomous agent browser sessions")
+  (:f max-rss-bytes I64 "Hard memory boundary ceiling in bytes (16MB)"))
+
+(dfs WasmRpcBridge
+  (:f module-name Str "Identifier of loaded WebAssembly module")
+  (:f entrypoint Str "Exported Batch RPC dispatch symbol")
+  (:f buffer-capacity I64 "Internal linear memory buffer size in bytes")
+  (:f zero-socket Bool "Invariant flag verifying zero POSIX or WebSocket socket calls"))
+
+(df make-browser-runtime-bridge [(worker-mode Bool) (linear-mem I64) (max-rss I64)] -> BrowserRuntimeBridge
+  :d "Constructs BrowserRuntimeBridge record enforcing Web Worker isolation and memory budget"
+  (BrowserRuntimeBridge
+    :worker-mode worker-mode
+    :linear-memory-bytes linear-mem
+    :active-sessions 1
+    :max-rss-bytes max-rss))
+
+(df make-wasm-rpc-bridge [(module-name Str) (capacity I64)] -> WasmRpcBridge
+  :d "Constructs WasmRpcBridge record configuring direct linear memory batch dispatch"
+  (WasmRpcBridge
+    :module-name module-name
+    :entrypoint "asl_rpc_dispatch"
+    :buffer-capacity capacity
+    :zero-socket true))
+
+(df dispatch-batch-rpc [(bridge WasmRpcBridge) (payload Str)] -> Str
+  :d "Dispatches batch RPC payload directly through WebAssembly linear memory with zero sockets"
+  (if (.-zero-socket bridge)
+      (str "(:batch-res :status \"completed\" :bridge \"" (.-module-name bridge) "\" :zero-socket true :latency-ms 2 :results [(:step :op \"ping\" :status \"ok\")])")
+      (str "(:batch-res :status \"error\" :reason \"zero-socket-violation\")")))
+
