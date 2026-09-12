@@ -3,7 +3,8 @@
   :x [init-service-worker
       route-action-message
       handle-message]
-  :i [(content :a cnt)])
+  :i [(content :a cnt)
+      (safety_gate :a sg)])
 
 (df init-service-worker [] -> Str
   :d "Initializes background service worker context."

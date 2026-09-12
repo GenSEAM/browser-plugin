@@ -111,7 +111,7 @@
     (assert (= (.-active-task-count ticked) 3) "ticked tasks count should be 3")
     (assert (string-contains? res-ok ":action-executed") "permitted action should execute")
     (assert (string-contains? res-bad ":action-rejected") "unconfirmed dangerous action should be rejected")
-    (assert (= (pl/get-plugin-version) "0.1.0") "plugin version mismatch")
+    (assert (= (pl/get-plugin-version) "1.0.0") "plugin version mismatch")
     (assert (string-contains? (pl/start-plugin) "initialized") "start plugin mismatch")
     true))
 

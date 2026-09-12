@@ -49,8 +49,8 @@
 
 (df run-tests [] -> Bool
   :d "Runs all in-browser autonomous runtime unit tests"
-  (let [(_t1 (test-browser-runtime-bridge))
-        (_t2 (test-wasm-rpc-bridge))
-        (_t3 (test-dispatch-batch-rpc))
-        (_t4 (test-dispatch-zero-socket-enforcement))]
-    true))
+  (let [(t1 (test-browser-runtime-bridge))
+        (t2 (test-wasm-rpc-bridge))
+        (t3 (test-dispatch-batch-rpc))
+        (t4 (test-dispatch-zero-socket-enforcement))]
+    (and t1 (and t2 (and t3 t4)))))
