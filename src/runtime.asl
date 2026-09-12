@@ -124,6 +124,6 @@
 (df dispatch-batch-rpc [(bridge WasmRpcBridge) (payload Str)] -> Str
   :d "Dispatches batch RPC payload directly through WebAssembly linear memory with zero sockets"
   (if (.-zero-socket bridge)
-      (str "(:batch-res :status \"completed\" :bridge \"" (.-module-name bridge) "\" :zero-socket true :latency-ms 2 :results [(:step :op \"ping\" :status \"ok\")])")
+      (str "(:batch-res :status \"error\" :reason \"ERR_UNSUPPORTED: zero-socket RPC not implemented\")")
       (str "(:batch-res :status \"error\" :reason \"zero-socket-violation\")")))
 
